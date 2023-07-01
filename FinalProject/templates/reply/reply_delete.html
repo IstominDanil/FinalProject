@@ -1,0 +1,15 @@
+{% extends 'default.html' %}
+
+{% block title %}
+	Reply delete
+{% endblock title %}
+
+{% block content %}
+    <h2>Удаление отклика</h2>
+    <hr>
+    <form action="" method="post">
+        {% csrf_token %}
+        <p>Вы точно хотите удалить "{{ object.text }}"?</p>
+        <input type="submit" value="Удалить" />
+    </form>
+{% endblock content %}

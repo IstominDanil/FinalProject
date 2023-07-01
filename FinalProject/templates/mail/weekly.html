@@ -1,0 +1,15 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Weekly notification</title>
+</head>
+<body>
+    <h2>Привет! Новые объявления за последнюю неделю:</h2>
+    <ul>
+        {% for adv in ads %}
+            <li><a href="{{ link }}{{ adv.get_absolute_url }}">{{ adv.headline }}</a></li>
+        {% endfor %}
+    </ul>
+</body>
+</html>

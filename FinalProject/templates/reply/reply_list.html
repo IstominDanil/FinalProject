@@ -1,0 +1,65 @@
+{% extends 'default.html' %}
+
+{% load custom_tags %}
+
+{% block title %}
+	Replies
+{% endblock title %}
+
+{% block content %}
+    <h2>Поиск откликов</h2>
+
+	<!--  Добавляем форму, которая объединяет набор полей, которые будут отправляться в запросе -->
+	<form action="" method="get">
+		<!-- Переменная, которую мы передали через контекст, может сгенерировать нам форму с полями -->
+		{{ filterset.form.as_p }}
+		<!-- Добавим кнопку отправки данных формы -->
+		<input type="submit" value="Найти" />
+	</form>
+    <hr>
+	{% if replies %}
+		<table cellpadding="5">
+			<tr>
+				<th>Текст</th>
+				<th>Дата создания</th>
+				<th>Принят?</th>
+				<th>Объявление</th>
+				<th>Автор</th>
+			</tr>
+			{% for reply in replies %}
+				<tr>
+					<td>{{ reply.text }}</td>
+					<td>{{ reply.created_at|date:'d.m.Y H:i' }}</td>
+					<td>{{ reply.approved|yesno:'Да,Нет,Может быть' }}</td>
+					<td><a href="{% url 'adv_detail' pk=reply.adv.pk %}">{{ reply.adv.headline }}</a></td>
+					<td>{{ reply.user }}</td>
+					{% if not reply.approved %}
+						<td><button><a href="{% url 'reply_approve' pk=reply.pk %}">Принять</button></td>
+					{% endif %}
+					<td><button><a href="{% url 'reply_delete' pk=reply.pk %}">Удалить</button></td>
+				</tr>
+
+			{% endfor %}
+		</table>
+	{% else %}
+		<h2>Откликов нет!</h2>
+	{% endif %}
+	<!-- Добавляем пагинацию на страницу -->
+	<!-- Информация о предыдущих страницах -->
+	{% if paginator.num_pages != 1 %}
+		{% if page_obj.has_previous %}
+			<a href="?{% url_replace page=1 %}">&laquo;Первая</a>
+			...
+			<a href="?{% url_replace page=page_obj.previous_page_number %}">{{ page_obj.previous_page_number }}</a>
+		{% endif %}
+		<!-- Информация о текущей странице -->
+		|{{ page_obj.number }}|
+		<!-- Информация о следующих страницах -->
+		{% if page_obj.has_next %}
+			<a href="?{% url_replace page=page_obj.next_page_number %}">{{ page_obj.next_page_number }}</a>
+			...
+			<a href="?{% url_replace page=page_obj.paginator.num_pages %}">Последняя&raquo;</a>
+		{% endif %}
+	{% endif %}
+
+{% endblock content %}
